@@ -1,0 +1,38 @@
+{
+  "id" : "d1e3c30d-688e-4515-8cca-0b6b30dde416",
+  "name" : "",
+  "request" : {
+    "urlPath" : "/Pushsender/Notify",
+    "method" : "POST"
+  },
+  "response" : {
+    "status" : 200,
+    "body" : "{\n  \"status\" : 4258951087961709784\n}",
+    "headers" : {
+      "Content-Type" : "application/json"
+    }
+  },
+  "uuid" : "d1e3c30d-688e-4515-8cca-0b6b30dde416",
+  "persistent" : true,
+  "metadata" : {
+    "mocklab" : {
+      "created" : {
+        "at" : "2023-01-22T09:35:23.073258889Z",
+        "via" : "OAS3_IMPORT"
+      },
+      "oas" : {
+        "operationId" : "PushSender_Notify",
+        "schema" : {
+          "type" : "object",
+          "properties" : {
+            "status" : {
+              "type" : "integer",
+              "format" : "uint32"
+            }
+          }
+        }
+      }
+    }
+  },
+  "insertionIndex" : 0
+}
