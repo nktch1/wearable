@@ -245,9 +245,7 @@ Let's change this value in [pushsender_notify_post_200.json](test/wiremock/push-
       "headers" : {
         "Content-Type" : "application/json"
       }
-    },
-  
-    ...
+    }
   }
   ```
 Check the ```wearable-mock``` logs:
