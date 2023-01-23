@@ -275,3 +275,14 @@ grpcurl \
     "status": 1126
 }
 ```
+
+### The tricky parts
+If a request is sent without the ```authority``` flag, 
+the following will appear in the ```wearable-mock``` logs:
+
+```
+wiremock.nginx.log: warn: domain "wearable-mock" is not mocked - [23/Jan/2023:05:35:40 +0000] 127.0.0.1 "Go-http-client/1.1" "POST /PushSender/Notify HTTP/1.1" 
+```
+
+This means that the proxy server could not decide without a special 
+header where to redirect your request to.
