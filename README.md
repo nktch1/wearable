@@ -6,7 +6,6 @@ a cardiac health monitoring system.
 ### Diagram
 Let's have a look at the diagram and move on to the practical part.
 
-
 ```mermaid
     C4Container
     title Container diagram for Wearable heart rate monitoring system
@@ -120,7 +119,7 @@ make up
 
 Let's see what happened after running ```grpc-wiremock```:
 - you got generated certificates to test with secured connection:
-  ```json
+  ```
   /tmp/certs/
   ├── mockCA.crt
   ├── mockCA.key
@@ -154,12 +153,12 @@ Let's see what happened after running ```grpc-wiremock```:
     ...
     
     "request" : {
-      "urlPath" : "/Pushsender/Notify",
+      "urlPath" : "/PushSender/Notify",
       "method" : "POST"
     },
     "response" : {
       "status" : 200,
-      "body" : "{\n  \"status\" : 4258951087961709784\n}",
+      "body" : "{\n  \"status\" : 425895108\n}",
       "headers" : {
         "Content-Type" : "application/json"
       }
@@ -201,6 +200,75 @@ You have the following:
 - the mocks are generated automatically, but you can change them 
 and ```grpc-wiremock``` will notice this and reload the mocks for you;
 - you don't need to know which port Wiremock allocated for the ```push-sender```.
+
 You can access the ```push-sender``` API like this:
-  - ```curl push-sender:80```
-  - ```grpcurl push-sender:80```
+
+#### from ```wearable``` container:
+  - direct request to Wiremock API:
+    ```bash
+    curl -XPOST wearable-mock:8000/PushSender/Notify
+    {
+        "status" : 425895108
+    }
+    ```
+  - request to reverse proxy server (need to specify name of dependency):
+    ```bash
+    curl -XPOST --header "Host: push-sender" wearable-mock/PushSender/Notify
+    {
+        "status" : 425895108
+    }
+    ```
+  - of course, you can access gRPC handler:
+    ```bash
+    grpcurl \
+        -d '{"uuid": "1234", "message": "foo"}' \
+        --authority "push-sender" --plaintext \
+        wearable-mock:3010 push_sender.PushSender/Notify 
+    {
+        "status": 425895108
+    }
+    ```
+
+This is all well and good, but we absolutely need to 
+get the status ```1126``` after sending the notification.
+  
+Let's change this value in [pushsender_notify_post_200.json](test/wiremock/push-sender/mappings/):
+  ```json
+  {
+    ...
+    
+    "request" : {
+      "urlPath" : "/PushSender/Notify",
+      "method" : "POST"
+    },
+    "response" : {
+      "status" : 200,
+      "body" : "{\n  \"status\" : 1126\n}",
+      "headers" : {
+        "Content-Type" : "application/json"
+      }
+    },
+  
+    ...
+  }
+  ```
+Check the ```wearable-mock``` logs:
+```bash
+docker logs wearable-mock | grep wiremock.mappings
+```
+```
+wiremock.mappings: Upload mappings for push-sender ... OK
+```
+
+As you may have guessed, the second 
+request will give us our target status:
+
+```bash
+grpcurl \
+    -d '{"uuid": "1234", "message": "foo"}' \
+    --authority "push-sender" --plaintext \
+    wearable-mock:3010 push_sender.PushSender/Notify 
+{
+    "status": 1126
+}
+```

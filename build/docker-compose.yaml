@@ -10,18 +10,19 @@ volumes:
 
 services:
 
-  # Main app, depends on
+  # Main app, depends on `push-sender`.
   wearable:
     container_name: wearable
     build:
       context: ../
       dockerfile: Dockerfile
 
+  # Container with grpc-wiremock, contains `push-sender` mock API.
   wearable-mock:
     container_name: wearable-mock
     image: ${GRPC_WIREMOCK_IMAGE}
 
-    # Ports available inside `shared-network`.
+    # Ports available inside `wearable-network`.
     expose:
       - 443
       - 8080

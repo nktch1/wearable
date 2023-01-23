@@ -2,12 +2,12 @@
   "id" : "d1e3c30d-688e-4515-8cca-0b6b30dde416",
   "name" : "",
   "request" : {
-    "urlPath" : "/Pushsender/Notify",
+    "urlPath" : "/PushSender/Notify",
     "method" : "POST"
   },
   "response" : {
     "status" : 200,
-    "body" : "{\n  \"status\" : 4258951087961709784\n}",
+    "body" : "{\n  \"status\" : 1126\n}",
     "headers" : {
       "Content-Type" : "application/json"
     }
