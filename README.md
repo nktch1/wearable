@@ -192,6 +192,11 @@ Just to let you visualize it:
 
 ## So what?
 
+```Wiremock``` can make it easier to develop and test connected services.
+By replacing the actual service API with a mock.
+
+And with ```grpc-wiremock``` you got support for **proto** contracts.
+
 You have the following:
 - the mocks are generated automatically, but you can change them 
 and ```grpc-wiremock``` will notice this and reload the mocks for you;
@@ -199,14 +204,3 @@ and ```grpc-wiremock``` will notice this and reload the mocks for you;
 You can access the ```push-sender``` API like this:
   - ```curl push-sender:80```
   - ```grpcurl push-sender:80```
-## Summary
-
-```Wiremock``` can make it easier to develop and test connected services. 
-By replacing the actual service API with a mock. 
-And with ```grpc-wiremock``` you got support for **proto** contracts.
-
-
-
-
-
-
