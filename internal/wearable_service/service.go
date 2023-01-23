@@ -16,7 +16,8 @@ type Service struct {
 }
 
 func NewService() (*Service, error) {
-	addr := "push-sender:51126"
+	addr := "wearable-mock:3010"
+
 	client, err := createClient(addr)
 	if err != nil {
 		return nil, fmt.Errorf("create push sender client: %w", err)
@@ -30,7 +31,14 @@ func (p *Service) RegisterGRPC(server *grpc.Server) {
 }
 
 func createClient(address string) (push_sender.PushSenderClient, error) {
-	conn, err := grpc.Dial(address, grpc.WithTransportCredentials(insecure.NewCredentials()))
+	opts := []grpc.DialOption{
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+
+		// add authority to grpc client
+		grpc.WithAuthority("push-sender"),
+	}
+
+	conn, err := grpc.Dial(address, opts...)
 	if err != nil {
 		return nil, fmt.Errorf("create push sender connect: %w", err)
 	}

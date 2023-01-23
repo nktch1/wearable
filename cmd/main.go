@@ -12,6 +12,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 
 	"github.com/nktch1/wearable/internal/wearable_service"
 	pbwearable "github.com/nktch1/wearable/pkg/server/wearable"
@@ -19,7 +20,7 @@ import (
 
 func main() {
 	ctx := context.Background()
-	address := ":3010"
+	address := ":30103"
 
 	if err := Run(ctx, address); err != nil {
 		log.Fatalf("failed to serve: %v", err)
@@ -56,6 +57,7 @@ func Run(ctx context.Context, address string) error {
 	}
 
 	pbwearable.RegisterWearableServiceServer(server, service)
+	reflection.Register(server)
 
 	go func() {
 		defer server.GracefulStop()

@@ -16,17 +16,17 @@ services:
     build:
       context: ../
       dockerfile: Dockerfile
+    ports:
+
+    # To send requests from a host.
+    - target: 30103
+      published: 30103
+      protocol: tcp
 
   # Container with grpc-wiremock, contains `push-sender` mock API.
   wearable-mock:
     container_name: wearable-mock
     image: ${GRPC_WIREMOCK_IMAGE}
-
-    # Ports available inside `wearable-network`.
-    expose:
-      - 443
-      - 8080
-      - 3009
 
     # Ports shared with host.
     ports:
