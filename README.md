@@ -192,9 +192,7 @@ Just to let you visualize it:
 
 ## So what?
 
-Be patient. I will explane.
-
-What do you have? The following:
+You have the following:
 - the mocks are generated automatically, but you can change them 
 and ```grpc-wiremock``` will notice this and reload the mocks for you;
 - you don't need to know which port Wiremock allocated for the ```push-sender```.
