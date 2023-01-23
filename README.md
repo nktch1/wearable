@@ -249,11 +249,11 @@ Let's change this value in [pushsender_notify_post_200.json](test/wiremock/push-
   }
   ```
 
-_It's also possible to change the body of the mock 
-using the GUI at http://localhost:9000.
+*It's also possible to change the body of the mock 
+using the GUI at http://localhost:9000*
 
-How much fine-tuning of the mocks can be done, 
-see [here](https://wiremock.org/studio/docs/advanced-stubbing)._
+*How much fine-tuning of the mocks can be done, 
+see [here](https://wiremock.org/studio/docs/advanced-stubbing).*
 
 Check the ```wearable-mock``` logs:
 ```bash
