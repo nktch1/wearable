@@ -162,9 +162,7 @@ Let's see what happened after running ```grpc-wiremock```:
       "headers" : {
         "Content-Type" : "application/json"
       }
-    },
-  
-    ...
+    }
   }
   ```
   
