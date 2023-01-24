@@ -97,7 +97,7 @@ MOCKS_PATH="$(PWD)/test/wiremock"
 
 CERTS_PATH="/tmp/certs"
 
-CONTRACTS_PATH="deps"
+CONTRACTS_PATH="$(PWD)deps"
 
 docker run \
   -p 9000:9000 \
