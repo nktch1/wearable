@@ -9,21 +9,15 @@ Let's have a look at the diagram and move on to the practical part.
 ```mermaid
     C4Container
     title Container diagram for Wearable heart rate monitoring system
-
-    Person(patient, Patient, "Patient with a heart health monitoring device")
-
+    
     Container_Boundary(c1, "Wearable heart rate monitoring system") {
-        Container(spa, "Single-Page App", "JavaScript, Angular", "Provides an interface to control the heart rate transmitter")
-        Container(backend, "Backend", "Golang", "Contains all processing of data from the heart rate transmitter. Sends notifications in case of emergency")
+        Container(backend, "Service", "Golang", "Contains all processing of data from the heart rate transmitter. Sends notifications in case of emergency")
         Container(push-sender, "Push Sender", "Golang", "Contains the logic for sending notifications")
     }
     
     System_Ext(email_system, "E-Mail System", "The external messaging system")
     System_Ext(voip_system, "VoIP System", "The external calling system")
-    
-    Rel(patient, spa, "Control the heart rate monitoring system")
-    
-    Rel(spa, backend, "Control the heart rate monitoring system")
+        
     Rel(backend, push-sender, "Notify personal in case of emergency")
     Rel(push-sender, email_system, "Make email notification")
     Rel(push-sender, voip_system, "Make phone call")
@@ -57,6 +51,7 @@ service WearableService {
       returns (stream BeatsPerMinuteResponse);
 }
 ```
+Check out [wearable.proto](api/grpc/wearable.proto).
 
 #### push-sender
 
@@ -68,17 +63,23 @@ service PushSender {
 }
 ```
 
+Check out [push-sender.proto](api/grpc/push-sender.proto).
+
+
 ### Before run
 
 To run ```grpc-wiremock```, you need to prepare three directories:
 
-- path to the folder with the service-dependency contracts;
+- path to the folder with the service-dependency contracts; The directory structure must contain
+  folders that match the name of the dependency domains. Each directory with a domain can contain **proto** and **openapi** contracts.
+  They must be placed in the **grpc** and **openapi** directories respectively.
+
     ```
     deps
     └── services
-        └── push-sender
-            └── grpc
-                └── push-sender.proto
+      └── push-sender
+          └── grpc
+              └── push-sender.proto
     ```
 - path to the directory for Wiremock config and mappings (can be empty);
   ```
@@ -86,18 +87,20 @@ To run ```grpc-wiremock```, you need to prepare three directories:
   ```
 - path to the directory for generated certificates. For example:
   ```
-  /tmp/certs
+  certs
   ```
-  
+
+Don't forget to look at the [After run](#after-run) section.
+
 ### Run
 
 Execute the folowing command in your console to start the ```grpc-wiremock```:
 ```bash
 MOCKS_PATH="$(PWD)/test/wiremock"
 
-CERTS_PATH="/tmp/certs"
+CERTS_PATH="$(PWD)/certs"
 
-CONTRACTS_PATH="$(PWD)deps"
+CONTRACTS_PATH="$(PWD)/deps"
 
 docker run \
   -p 9000:9000 \
@@ -109,18 +112,44 @@ docker run \
 ```
 
 You can also run services using ```docker compose```. 
-Check out [compose](build/docker-compose.yaml) file. 
+
+Check out [compose](build/docker-compose.yaml) file. And a [makefile](Makefile).
 
 ```bash
 make up
 ```
 
 ### After run
+Let's check the ```grpc-wiremock``` container.
+```bash
+docker logs wearable-mock | tail -n 15
+```
 
-Let's see what happened after running ```grpc-wiremock```:
+```
+wiremock.http: ██     ██ ██ ██████  ███████ ███    ███  ██████   ██████ ██   ██ 
+wiremock.http: ██     ██ ██ ██   ██ ██      ████  ████ ██    ██ ██      ██  ██  
+wiremock.http: ██  █  ██ ██ ██████  █████   ██ ████ ██ ██    ██ ██      █████   
+wiremock.http: ██ ███ ██ ██ ██   ██ ██      ██  ██  ██ ██    ██ ██      ██  ██  
+wiremock.http:  ███ ███  ██ ██   ██ ███████ ██      ██  ██████   ██████ ██   ██ 
+wiremock.http:                    ___         __  _____  ___ 
+wiremock.http:                   / _ )__ __  / / / / _ \/ _ \
+wiremock.http:                  / _  / // / / /_/ / ___/\_, /
+wiremock.http:                 /____/\_, /  \____/_/   /___/ 
+wiremock.http:                      /___/                    
+wiremock.http:                Web console: http://localhost:9000
+wiremock.grpc: Build ok.
+wiremock.grpc: Restarting the given command.
+wiremock.grpc: Starting listening on :3010
+wiremock.grpc: Listening on :3010
+```
+
+You can see that ```Wiremock Studio``` itself started successfully
+and also the grpc-proxy server on :3010 is running.
+
+Other than that:
 - you got generated certificates to test with secured connection:
   ```
-  /tmp/certs/
+  certs/
   ├── mockCA.crt
   ├── mockCA.key
   └── mockCA.srl
@@ -168,8 +197,8 @@ Let's see what happened after running ```grpc-wiremock```:
   
 ### Wiremock APIs
 
-As you can learn from the [docs](https://wiremock.org/studio/docs/stubbing), ```Wiremock Studio``` supports
-multiple APIs simultaneously. 
+```grpc-wiremock``` allows you to mock several APIs simultaneously. 
+It uses Wiremock Studio under the hood, so you can learn it deaper from the ```Wiremock Studio``` [docs](https://wiremock.org/studio/docs/stubbing).
 
 This means that if you want to add more 
 mocks besides ```push-sender```, ```grpc-wiremock``` will carefully create mocks 
@@ -177,17 +206,25 @@ for all dependencies in the ```deps``` directory for you.
 
 Just to let you visualize it:
 
-``` mermaid
-  C4Container
-  title Wiremock Studio APIs
+```mermaid
+    C4Container
+    title Container diagram for Wearable heart rate monitoring system
     
-  Container_Boundary(c1, "Wiremock") {
-      Container(push-sender, "push-sender API", "", "Returns the mocs, listening on port 8000. API ports always start with 8000")
-      Container(you-name-it, "You Name It API", "", "This could be your service. Port: 8001")
-  }
+    Container_Boundary(c1, "Wearable heart rate monitoring system") {
+        Container(backend, "Service", "Golang", "Contains all processing of data from the heart rate transmitter. Sends notifications in case of emergency")
+        Container(push-sender-mock, "Push Sender Mock", "Golang", "Mocks the logic for sending notifications")
+        Container(you-name-it, "You Name It API", "", "This could be your service. Port: 8001")
+    }
+    
+    System_Ext(email_system, "E-Mail System", "The external messaging system")
+    System_Ext(voip_system, "VoIP System", "The external calling system")
+        
+    Rel(backend, push-sender-mock, "Notify personal in case of emergency")
+    Rel(push-sender-mock, email_system, "Make email notification")
+    Rel(push-sender-mock, voip_system, "Make phone call")
 ```
 
-## So what?
+## How to try
 
 ```Wiremock``` can make it easier to develop and test connected services.
 By replacing the actual service API with a mock.
@@ -199,14 +236,26 @@ You have the following:
 and ```grpc-wiremock``` will notice this and reload the mocks for you;
 - you don't need to know which port Wiremock allocated for the ```push-sender```.
 
+To run services: ```make compose-run```.
+
 You can access the ```push-sender``` API like this:
 
 #### from ```wearable``` container:
+  - you can access gRPC handler:
+    ```bash
+    grpcurl \
+        -d '{"uuid": "1234", "message": "foo"}' \
+        --authority "push-sender" --plaintext \
+        wearable-mock:3010 push_sender.PushSender/Notify 
+    {
+        "status": 425895108
+    }
+    ```
   - direct request to Wiremock API:
     ```bash
     curl -XPOST wearable-mock:8000/PushSender/Notify
     {
-        "status" : 425895108
+      "status" : 425895108
     }
     ```
   - request to reverse proxy server (need to specify name of dependency):
@@ -216,15 +265,22 @@ You can access the ```push-sender``` API like this:
         "status" : 425895108
     }
     ```
-  - of course, you can access gRPC handler:
+
+#### from host:
+- install certificates:
+    ```bash
+    sudo security add-trusted-cert -d -r trustRoot -k /Library/Keychains/System.keychain $(pwd)/certs/mockCA.crt 
+    ```
+  
+- you can simplify access to the endpoints by adding new lines to ```/etc/hosts```:
+    ```bash
+    echo '127.0.0.1 push-sender' | sudo tee -a "/etc/hosts"
+    ```
+- after updating ```/etc/hosts``` file, you can access endpoints like this:
     ```bash
     grpcurl \
-        -d '{"uuid": "1234", "message": "foo"}' \
-        --authority "push-sender" --plaintext \
-        wearable-mock:3010 push_sender.PushSender/Notify 
-    {
-        "status": 425895108
-    }
+      -d '{"uuid": "1234", "message": "foo"}' --plaintext \
+      push-sender:3010 push_sender.PushSender/Notify
     ```
 
 This is all well and good, but we absolutely need to 
@@ -277,6 +333,34 @@ grpcurl \
 ```
 
 ### The tricky parts
+The header ```Host``` in the http request and ```authority``` for gRPC
+are used for authentication and routing.
+
+Example NGINX config for a Wearable system:
+
+```
+cat /etc/nginx/http.d/mock-push-sender.conf 
+
+server {
+    server_name  push-sender push-sender.*;
+
+    listen      80;
+    listen [::]:80;
+    listen 443 ssl;
+
+    ssl_certificate /etc/ssl/mock/mock.crt;
+    ssl_certificate_key /etc/ssl/mock/mock.key;
+
+    access_log  /var/log/nginx/push-sender.access.log  main;
+
+    location / {
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://localhost:8000;
+    }
+}
+```
+
 If a request is sent without the ```authority``` flag, 
 the following will appear in the ```wearable-mock``` logs:
 
