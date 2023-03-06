@@ -107,8 +107,8 @@ docker run \
   -p 8000:8000 \
   -v ${MOCKS_PATH}:/home/mock \
   -v ${CERTS_PATH}:/etc/ssl/mock/share \
-  -v ${CONTRACTS_PATH}:/proto \
-  SberMarket-Tech/grpc-wiremock@latest
+  -v ${CONTRACTS_PATH}:/contracts \
+  sbermarkettech/grpc-wiremock@latest
 ```
 
 You can also run services using ```docker compose```. 
@@ -126,21 +126,21 @@ docker logs wearable-mock | tail -n 15
 ```
 
 ```
-wiremock.http: ██     ██ ██ ██████  ███████ ███    ███  ██████   ██████ ██   ██ 
-wiremock.http: ██     ██ ██ ██   ██ ██      ████  ████ ██    ██ ██      ██  ██  
-wiremock.http: ██  █  ██ ██ ██████  █████   ██ ████ ██ ██    ██ ██      █████   
-wiremock.http: ██ ███ ██ ██ ██   ██ ██      ██  ██  ██ ██    ██ ██      ██  ██  
-wiremock.http:  ███ ███  ██ ██   ██ ███████ ██      ██  ██████   ██████ ██   ██ 
-wiremock.http:                    ___         __  _____  ___ 
-wiremock.http:                   / _ )__ __  / / / / _ \/ _ \
-wiremock.http:                  / _  / // / / /_/ / ___/\_, /
-wiremock.http:                 /____/\_, /  \____/_/   /___/ 
-wiremock.http:                      /___/                    
-wiremock.http:                Web console: http://localhost:9000
-wiremock.grpc: Build ok.
-wiremock.grpc: Restarting the given command.
-wiremock.grpc: Starting listening on :3010
-wiremock.grpc: Listening on :3010
+gw.wiremock.run: ██     ██ ██ ██████  ███████ ███    ███  ██████   ██████ ██   ██ 
+gw.wiremock.run: ██     ██ ██ ██   ██ ██      ████  ████ ██    ██ ██      ██  ██  
+gw.wiremock.run: ██  █  ██ ██ ██████  █████   ██ ████ ██ ██    ██ ██      █████   
+gw.wiremock.run: ██ ███ ██ ██ ██   ██ ██      ██  ██  ██ ██    ██ ██      ██  ██  
+gw.wiremock.run:  ███ ███  ██ ██   ██ ███████ ██      ██  ██████   ██████ ██   ██ 
+gw.wiremock.run:                    ___         __  _____  ___ 
+gw.wiremock.run:                   / _ )__ __  / / / / _ \/ _ \
+gw.wiremock.run:                  / _  / // / / /_/ / ___/\_, /
+gw.wiremock.run:                 /____/\_, /  \____/_/   /___/ 
+gw.wiremock.run:                      /___/                    
+gw.wiremock.run:                Web console: http://localhost:9000
+gw.wiremock.run: Build ok.
+gw.wiremock.run: Restarting the given command.
+gw.wiremock.run: Starting listening on :3010
+gw.wiremock.run: Listening on :3010
 ```
 
 You can see that ```Wiremock Studio``` itself started successfully
@@ -165,7 +165,7 @@ Other than that:
   └── services.json
   ```
   
-- Wiremock config ```service.json```:
+- Wiremock config ```services.json```:
   ```json
   {
     "services" : [ {
@@ -198,7 +198,7 @@ Other than that:
 ### Wiremock APIs
 
 ```grpc-wiremock``` allows you to mock several APIs simultaneously. 
-It uses Wiremock Studio under the hood, so you can learn it deaper from the ```Wiremock Studio``` [docs](https://wiremock.org/studio/docs/stubbing).
+It uses Wiremock Studio under the hood, so you can learn it deeper from the ```Wiremock Studio``` [docs](https://wiremock.org/studio/docs/stubbing).
 
 This means that if you want to add more 
 mocks besides ```push-sender```, ```grpc-wiremock``` will carefully create mocks 
@@ -365,7 +365,7 @@ If a request is sent without the ```authority``` flag,
 the following will appear in the ```wearable-mock``` logs:
 
 ```
-wiremock.nginx.log: warn: domain "wearable-mock" is not mocked - [23/Jan/2023:05:35:40 +0000] 127.0.0.1 "Go-http-client/1.1" "POST /PushSender/Notify HTTP/1.1" 
+gw.routing.nginx.logs: warn: domain "wearable-mock" is not mocked - [23/Jan/2023:05:35:40 +0000] 127.0.0.1 "Go-http-client/1.1" "POST /PushSender/Notify HTTP/1.1" 
 ```
 
 This means that the proxy server could not decide without a special 

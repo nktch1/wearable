@@ -1,5 +1,5 @@
 {
-  "id" : "d1e3c30d-688e-4515-8cca-0b6b30dde416",
+  "id" : "c1fa0e22-a48a-4ea6-81a9-2c10e9a56107",
   "name" : "",
   "request" : {
     "urlPath" : "/PushSender/Notify",
@@ -7,17 +7,17 @@
   },
   "response" : {
     "status" : 200,
-    "body" : "{\n  \"status\" : 1126\n}",
+    "body" : "{\n  \"status\" : 4258951087961709784\n}",
     "headers" : {
       "Content-Type" : "application/json"
     }
   },
-  "uuid" : "d1e3c30d-688e-4515-8cca-0b6b30dde416",
+  "uuid" : "c1fa0e22-a48a-4ea6-81a9-2c10e9a56107",
   "persistent" : true,
   "metadata" : {
     "mocklab" : {
       "created" : {
-        "at" : "2023-01-22T09:35:23.073258889Z",
+        "at" : "2023-02-07T10:14:25.348735653Z",
         "via" : "OAS3_IMPORT"
       },
       "oas" : {

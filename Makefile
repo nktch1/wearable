@@ -14,5 +14,5 @@ docker-run:
 	  -p 8000:8000 \
 	  -v ${MOCKS_PATH}:/home/mock \
 	  -v ${CERTS_PATH}:/etc/ssl/mock/share \
-	  -v ${CONTRACTS_PATH}:/proto \
+	  -v ${CONTRACTS_PATH}:/contracts \
 	  ${GRPC_WIREMOCK_IMAGE}
