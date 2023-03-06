@@ -103,6 +103,7 @@ CERTS_PATH="$(PWD)/certs"
 CONTRACTS_PATH="$(PWD)/deps"
 
 docker run \
+  -it --rm --name grpc-wiremock \
   -p 9000:9000 \
   -p 8000:8000 \
   -p 80:80 \
