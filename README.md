@@ -105,10 +105,11 @@ CONTRACTS_PATH="$(PWD)/deps"
 docker run \
   -p 9000:9000 \
   -p 8000:8000 \
+  -p 80:80 \
   -v ${MOCKS_PATH}:/home/mock \
   -v ${CERTS_PATH}:/etc/ssl/mock/share \
   -v ${CONTRACTS_PATH}:/contracts \
-  sbermarkettech/grpc-wiremock@latest
+  sbermarkettech/grpc-wiremock:latest
 ```
 
 You can also run services using ```docker compose```. 
