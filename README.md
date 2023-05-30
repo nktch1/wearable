@@ -136,14 +136,13 @@ gw.wiremock.run:                   / _ )__ __  / / / / _ \/ _ \
 gw.wiremock.run:                  / _  / // / / /_/ / ___/\_, /
 gw.wiremock.run:                 /____/\_, /  \____/_/   /___/ 
 gw.wiremock.run:                      /___/                    
-gw.wiremock.run:                Web console: http://localhost:9000
 gw.wiremock.run: Build ok.
 gw.wiremock.run: Restarting the given command.
 gw.wiremock.run: Starting listening on :3010
 gw.wiremock.run: Listening on :3010
 ```
 
-You can see that ```Wiremock Studio``` itself started successfully
+You can see that ```Wiremock``` itself started successfully
 and also the grpc-proxy server on :3010 is running.
 
 Other than that:
@@ -155,54 +154,22 @@ Other than that:
   └── mockCA.srl
   ```
 
-- ```test/wiremock``` directory looks like this:
-  ```
-  test/wiremock
-  ├── push-sender
-  │   ├── __files
-  │   └── mappings
-  │       └── pushsender_notify_post_200.json
-  └── services.json
-  ```
-  
-- Wiremock config ```services.json```:
-  ```json
-  {
-    "services" : [ {
-      ...
-      
-      "name" : "push-sender",
-      "port" : 8000,
-    } ]
-  }
-  ```
-- and generated mock for your ```Notify``` method from [push-sender.proto](deps/services/push-sender/grpc/push-sender.proto):
-  ```json
-  {
-    ...
-    
-    "request" : {
-      "urlPath" : "/PushSender/Notify",
-      "method" : "POST"
-    },
-    "response" : {
-      "status" : 200,
-      "body" : "{\n  \"status\" : 425895108\n}",
-      "headers" : {
-        "Content-Type" : "application/json"
-      }
-    }
-  }
-  ```
-  
+  - ```test/wiremock``` directory looks like this:
+    ```
+    test/wiremock
+    └── push-sender
+              ├── __files
+              └── mappings
+    ```
+
 ### Wiremock APIs
 
 ```grpc-wiremock``` allows you to mock several APIs simultaneously. 
-It uses Wiremock Studio under the hood, so you can learn it deeper from the ```Wiremock Studio``` [docs](https://wiremock.org/studio/docs/stubbing).
+It uses [Supervisord](https://github.com/ochinchina/supervisord) to start several Wiremock processes under the hood.
 
-This means that if you want to add more 
-mocks besides ```push-sender```, ```grpc-wiremock``` will carefully create mocks 
-for all dependencies in the ```deps``` directory for you.
+To add/delete API instance:
+- add/delete directory <dependency-name> in ```test/wiremock```
+- call ```docker exec wearable-mock reload``` to apply changes 
 
 Just to let you visualize it:
 
@@ -232,8 +199,8 @@ By replacing the actual service API with a mock.
 And with ```grpc-wiremock``` you got support for **proto** contracts.
 
 You have the following:
-- the mocks are generated automatically, but you can change them 
-and ```grpc-wiremock``` will notice this and reload the mocks for you;
+- the mocks are generated automatically, you can change them 
+and ```grpc-wiremock``` will notice this and reload the mocks for you (**COMING SOON**);
 - you don't need to know which port Wiremock allocated for the ```push-sender```.
 
 To run services: ```make compose-run```.
@@ -305,11 +272,8 @@ Let's change this value in [pushsender_notify_post_200.json](test/wiremock/push-
   }
   ```
 
-*It's also possible to change the body of the mock 
-using the GUI at http://localhost:9000*
-
 *How much fine-tuning of the mocks can be done, 
-see [here](https://wiremock.org/studio/docs/advanced-stubbing).*
+see [here](https://wiremock.org/docs/stubbing).*
 
 Check the ```wearable-mock``` logs:
 ```bash

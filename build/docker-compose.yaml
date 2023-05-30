@@ -31,7 +31,7 @@ services:
     # Ports shared with host.
     ports:
 
-        # Wiremock Studio web interface port.
+        # Supervisord web interface port.
         # Available in browser http://localhost:9000.
       - target: 9000
         published: 9000
@@ -73,11 +73,7 @@ services:
 
       - type: bind
         source: ../deps
-        target: /proto
-
-      - type: bind
-        source: ../configs
-        target: /configs
+        target: /contracts
 
       - type: bind
         source: /tmp/certs

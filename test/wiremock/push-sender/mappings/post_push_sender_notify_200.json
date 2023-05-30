@@ -7,7 +7,7 @@
   },
   "response" : {
     "status" : 200,
-    "body" : "{\n  \"status\" : 4258951087961709784\n}",
+    "body" : "{\n  \"status\" : 42589510\n}",
     "headers" : {
       "Content-Type" : "application/json"
     }

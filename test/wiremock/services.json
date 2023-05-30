@@ -1,8 +1,0 @@
-{
-  "services" : [ {
-    "id" : "ndve5",
-    "name" : "push-sender",
-    "port" : 8000,
-    "rootDir" : "push-sender"
-  } ]
-}
